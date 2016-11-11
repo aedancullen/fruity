@@ -16,12 +16,13 @@ android {
         }
     }
 }
+
+dependencies {
+    compile project(':FtcRobotController')
+}
+
 repositories {
     flatDir {
         dirs '../libs'
     }
-}
-
-dependencies {
-    compile project(':FtcRobotController')
 }

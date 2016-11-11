@@ -1,4 +1,4 @@
-package io.github.cn04.fruity.system;
+package io.github.aedancullen.fruity.system;
 
 import android.util.Log;
 

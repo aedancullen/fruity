@@ -1,4 +1,4 @@
-package io.github.cn04.fruity.samples;
+package io.github.aedancullen.fruity.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import java.util.Arrays;
 
-import io.github.cn04.fruity.system.FruityController;
-import io.github.cn04.fruity.system.MotorConfigurations;
+import io.github.aedancullen.fruity.system.FruityController;
+import io.github.aedancullen.fruity.system.MotorConfigurations;
 
 /**
  * ----- Fruity Omnidirectional Control System for FTC -----
@@ -19,7 +19,7 @@ import io.github.cn04.fruity.system.MotorConfigurations;
  * (c) 2016 Aedan Cullen. Distributed under the MIT License.
  */
 
-@TeleOp(name="cn04.fruity: Gamepad Driving Demo", group="Fruity")
+@TeleOp(name="fruity: Gamepad Driving Demo", group="Fruity")
 //@Disabled
 
 public class FruityGamepadDriving extends OpMode {

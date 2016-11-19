@@ -7,7 +7,7 @@ package io.github.aedancullen.fruity.system;
  * A structure to store information about a particular
  * set of parallel (facing in the same direction) wheels in an omnibot design.
  *
- * (c) 2016 Aedan Cullen. Distributed under the MIT License.
+ * (c) 2016 Aedan Cullen. Distributed under the GNU GPLv3 license.
  */
 
 public class MotorDescription {

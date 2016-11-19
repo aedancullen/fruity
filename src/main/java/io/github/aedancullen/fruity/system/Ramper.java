@@ -7,7 +7,7 @@ package io.github.aedancullen.fruity.system;
  * A 'movement smoother' that creates linear control curves in order
  * to gain smoother acceleration/deceleration from the gamepad controls.
  *
- * (c) 2016 Aedan Cullen. Distributed under the MIT License.
+ * (c) 2016 Aedan Cullen. Distributed under the GNU GPLv3 license.
  */
 
 public class Ramper {

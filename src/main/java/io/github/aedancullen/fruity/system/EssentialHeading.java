@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * EssentialHeading.java
  * A structure to store headings in a convenient, compact representation.
  *
- * (c) 2016 Aedan Cullen. Distributed under the MIT License.
+ * (c) 2016 Aedan Cullen. Distributed under the GNU GPLv3 license.
  */
 
 public class EssentialHeading {

@@ -17,7 +17,7 @@ import io.github.aedancullen.fruity.system.MotorConfigurations;
  * FruityGamepadDriving.java
  * A fun demo of omnidirectional driving capability, made simple!
  *
- * (c) 2016 Aedan Cullen. Distributed under the MIT License.
+ * (c) 2016 Aedan Cullen. Distributed under the GNU GPLv3 license.
  */
 
 @TeleOp(name="fruity: Gamepad Driving Demo", group="Fruity")

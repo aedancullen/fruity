@@ -23,7 +23,7 @@ import java.util.List;
  * A general control algorithm for any type of omnidirectional driving design.
  * Accepts motor arrangements in the form of Lists of DcMotors and MotorDescriptions.
  *
- * (c) 2016 Aedan Cullen. Distributed under the MIT License.
+ * (c) 2016 Aedan Cullen. Distributed under the GNU GPLv3 license.
  */
 
 public class FruityController {

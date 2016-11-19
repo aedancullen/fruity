@@ -10,7 +10,7 @@ import java.util.List;
  * Defines several common formats of omnidirectional robot configurations.
  * Each can be passed to a FruityController along with a parallel list of motors for use.
  *
- * (c) 2016 Aedan Cullen. Distributed under the MIT License.
+ * (c) 2016 Aedan Cullen. Distributed under the GNU GPLv3 license.
  */
 
 public class MotorConfigurations {

@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -99,7 +98,7 @@ public class FruityController {
         Log.d(TAG, "[GAMEPAD] Current robot abs. heading: " + currentRobotHeading.getAngleDegrees());
         EssentialHeading drivingDirection = stickHeading.subtract(currentRobotHeading);
         Log.d(TAG, "[GAMEPAD] Necessary driving direction: " + currentRobotHeading.getAngleDegrees());
-        drive(drivingDirection, translationPower /2, rotationPower /2);
+        drive(drivingDirection, translationPower, rotationPower);
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {

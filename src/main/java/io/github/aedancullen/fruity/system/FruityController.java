@@ -35,6 +35,8 @@ public class FruityController {
     private Telemetry telemetry;
     BNO055IMU imu;
     EssentialHeading headingStraight;
+    Ramper ramper;
+    boolean usingRamper = false;
 
     public FruityController(HardwareMap hardwareMap,
                             Telemetry telemetry,
@@ -78,6 +80,15 @@ public class FruityController {
                 "Initialized " + motors.size() + " motors. IMU: " + imuStatus);
     }
 
+    public void setupRamper(double angleRampRate, double translationPowerRampRate, double rotationPowerRampRate) {
+        ramper = new Ramper(angleRampRate, translationPowerRampRate, rotationPowerRampRate);
+        usingRamper = true;
+    }
+
+    public void disableRamper() {
+        usingRamper = false;
+    }
+
     public void handleGamepad(Gamepad gamepad) {
         EssentialHeading headingNow = new EssentialHeading(0);
         if (imu != null) {
@@ -98,7 +109,13 @@ public class FruityController {
         Log.d(TAG, "[GAMEPAD] Current robot abs. heading: " + currentRobotHeading.getAngleDegrees());
         EssentialHeading drivingDirection = stickHeading.subtract(currentRobotHeading);
         Log.d(TAG, "[GAMEPAD] Necessary driving direction: " + currentRobotHeading.getAngleDegrees());
-        drive(drivingDirection, translationPower, rotationPower);
+        if (usingRamper) {
+            ramper.ramp(drivingDirection, translationPower, rotationPower);
+            drive(ramper.getHeading(), ramper.getTranslationPower(), ramper.getRotationPower());
+        }
+        else {
+            drive(drivingDirection, translationPower, rotationPower);
+        }
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {

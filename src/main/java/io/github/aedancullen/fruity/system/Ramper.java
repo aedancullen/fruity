@@ -33,6 +33,9 @@ public class Ramper {
     }
 
     public void ramp(EssentialHeading heading, double translationPower, double rotationPower) {
+        targetAngle = heading.getAngleDegrees();
+        targetTranslationPower = translationPower;
+        targetRotationPower = rotationPower;
         if (lastRamp == 0) {
             lastRamp = System.currentTimeMillis();
         }

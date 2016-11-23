@@ -37,7 +37,7 @@ public class Ramper {
             lastRamp = System.currentTimeMillis();
         }
         long elapsed = System.currentTimeMillis() - lastRamp;
-        lastRamp = elapsed;
+        lastRamp = System.currentTimeMillis();
         if (Math.abs(currentAngle - targetAngle) > 5) {
             if (currentAngle > targetAngle) {
                 currentAngle -= (angleRampRate * elapsed);

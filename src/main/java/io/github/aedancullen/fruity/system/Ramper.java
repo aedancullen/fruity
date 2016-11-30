@@ -24,7 +24,7 @@ public class Ramper {
     double translationPowerRampRate;
     double rotationPowerRampRate;
 
-    long lastRamp;
+    long lastRamp = 0;
 
     public Ramper(double angleRampRate, double translationPowerRampRate, double rotationPowerRampRate) {
         this.angleRampRate = angleRampRate;
@@ -46,13 +46,6 @@ public class Ramper {
                 currentAngle -= (angleRampRate * elapsed);
             } else {
                 currentAngle += (angleRampRate * elapsed);
-            }
-        }
-        if (Math.abs(currentTranslationPower - targetTranslationPower) > 0.05) {
-            if (currentTranslationPower > targetTranslationPower) {
-                currentTranslationPower -= (translationPowerRampRate * elapsed);
-            } else {
-                currentTranslationPower += (translationPowerRampRate * elapsed);
             }
         }
         if (Math.abs(currentTranslationPower - targetTranslationPower) > 0.05) {

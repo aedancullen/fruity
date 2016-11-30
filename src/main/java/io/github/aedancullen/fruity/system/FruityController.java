@@ -38,6 +38,8 @@ public class FruityController {
     Ramper ramper;
     boolean usingRamper = false;
 
+    public double movedDistanceZero = 0;
+
     public FruityController(HardwareMap hardwareMap,
                             Telemetry telemetry,
                             String imuName,
@@ -116,6 +118,22 @@ public class FruityController {
         else {
             drive(drivingDirection, translationPower, rotationPower);
         }
+    }
+
+    public void zeroMovedDistance() {
+        movedDistanceZero = 0;
+    }
+
+    public double estimateMovedDistance(EssentialHeading heading) {
+        double output = 0;
+        for (int i = 0; i < motors.size(); i++) {
+            DcMotor motor = motors.get(i);
+            MotorDescription motorDescription = motorConfiguration.get(i);
+            EssentialHeading offset = heading.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
+            double headingInducedPowerScale = offset.getAngleDegrees() / 90;
+            output += motor.getCurrentPosition() * headingInducedPowerScale;
+        }
+        return (output / motors.size()) - movedDistanceZero;
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {

@@ -124,14 +124,16 @@ public class FruityController {
         movedDistanceZero = 0;
     }
 
-    public double estimateMovedDistance(EssentialHeading heading) {
+    public double estimateMovedDistance(EssentialHeading heading, double translationPower, double rotationPower) {
         double output = 0;
         for (int i = 0; i < motors.size(); i++) {
             DcMotor motor = motors.get(i);
             MotorDescription motorDescription = motorConfiguration.get(i);
             EssentialHeading offset = heading.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
             double headingInducedPowerScale = offset.getAngleDegrees() / 90;
-            output += motor.getCurrentPosition() * headingInducedPowerScale;
+            double ratio = rotationPower / (translationPower * headingInducedPowerScale);
+            double translationPart = motor.getCurrentPosition() - (motor.getCurrentPosition() * ratio);
+            output += translationPart * headingInducedPowerScale;
         }
         return (output / motors.size()) - movedDistanceZero;
     }

@@ -38,7 +38,7 @@ public class FruityController {
     Ramper ramper;
     boolean usingRamper = false;
 
-    public double movedDistanceZero = 0;
+    public int[] movedDistanceZero;
 
     public FruityController(HardwareMap hardwareMap,
                             Telemetry telemetry,
@@ -61,6 +61,7 @@ public class FruityController {
             motor.setMode(runMode);
             motor.setDirection(clockwiseDirection);
         }
+        movedDistanceZero = new int[motors.size()];
         headingStraight = new EssentialHeading(0);
         String imuStatus;
         if (!imuName.equals("")) {
@@ -120,22 +121,21 @@ public class FruityController {
         }
     }
 
-    public void zeroMovedDistance() {
-        movedDistanceZero = 0;
-    }
-
     public double estimateMovedDistance(EssentialHeading heading, double translationPower, double rotationPower) {
         double output = 0;
         for (int i = 0; i < motors.size(); i++) {
             DcMotor motor = motors.get(i);
+            int movedEnc = motor.getCurrentPosition() - movedDistanceZero[i];
+            movedDistanceZero[i] = movedEnc;
             MotorDescription motorDescription = motorConfiguration.get(i);
             EssentialHeading offset = heading.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
             double headingInducedPowerScale = offset.getAngleDegrees() / 90;
-            double ratio = rotationPower / (translationPower * headingInducedPowerScale);
-            double translationPart = motor.getCurrentPosition() - (motor.getCurrentPosition() * ratio);
+            double rotationNecessarySpeed = motorDescription.getRotationGain() * rotationPower;
+            double ratio = rotationPower / ((translationPower * headingInducedPowerScale) + rotationNecessarySpeed);
+            double translationPart = movedEnc - (movedEnc * ratio);
             output += translationPart * headingInducedPowerScale;
         }
-        return (output / motors.size()) - movedDistanceZero;
+        return (output / motors.size());
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {

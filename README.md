@@ -1,7 +1,7 @@
 # fruity
 Omnidirectional Driving and Path Planning for FIRST Tech Challenge
 
-Fruity is an omni-directional driving controller for FIRST Technical Challenge robotics competitions. It allows for simple control of robots configured with multiple pairs of angled holonomic wheels which can be collectively driven to allow for maneuverable navigation in any direction. Fruity provides a simple API which allows the user to input a target angle at which to drive, a rate at which to drive in that direction, and additionally a rate of rotation which should be carried out at the same time as the translation. 
+Fruity is an omni-directional driving controller for FIRST Technical Challenge robotics competitions. It allows for simple control of robots configured with multiple pairs of angled holonomic wheels which can be collectively driven to allow for maneuverable navigation in any direction. Fruity provides a simple API which allows the user to input a target angle at which to drive, a rate at which to drive in that direction, and additionally a rate of rotation which should be carried out at the same time as the translation. Finally, Fruity supports input of driving data from CSV files on Android external storage, which can be used to script autonomous driving activities.
 
 ## Driving base configuration
 Wheel configurations are laid out in an organized fashion, with several pre-configured for common driving base designs. Motor rotation direction (as would differ for motors on each side of the robot) is additionally computed on the fly and does not need to be pre-programmed by the user. This entire kinetic automation and maneuverability in a driving base is unique in the community of typical "differential - drive" robots.

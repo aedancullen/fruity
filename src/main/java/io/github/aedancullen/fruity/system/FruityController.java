@@ -79,8 +79,7 @@ public class FruityController {
             imuStatus = "not in use";
         }
         Log.i(TAG, "[CONSTRUCTOR] Straight heading: " + headingStraight.getAngleDegrees());
-        telemetry.addData("* Fruity Controller", "(c) 2016 A. Cullen. MIT License\n" +
-                "Initialized " + motors.size() + " motors. IMU: " + imuStatus);
+        telemetry.addData("* Fruity Controller", "Initialized " + motors.size() + " motors. IMU: " + imuStatus);
     }
 
     public void setupRamper(double angleRampRate, double translationPowerRampRate, double rotationPowerRampRate) {

@@ -12,28 +12,23 @@ package io.github.aedancullen.fruity.system;
 
 public class Ramper {
 
-    double targetAngle;
     double targetTranslationPower;
     double targetRotationPower;
 
-    double currentAngle;
     double currentTranslationPower;
     double currentRotationPower;
 
-    double angleRampRate;
     double translationPowerRampRate;
     double rotationPowerRampRate;
 
     long lastRamp = 0;
 
-    public Ramper(double angleRampRate, double translationPowerRampRate, double rotationPowerRampRate) {
-        this.angleRampRate = angleRampRate;
+    public Ramper(double translationPowerRampRate, double rotationPowerRampRate) {
         this.translationPowerRampRate = translationPowerRampRate;
         this.rotationPowerRampRate = rotationPowerRampRate;
     }
 
-    public void ramp(EssentialHeading heading, double translationPower, double rotationPower) {
-        targetAngle = heading.getAngleDegrees();
+    public void ramp(double translationPower, double rotationPower) {
         targetTranslationPower = translationPower;
         targetRotationPower = rotationPower;
         if (lastRamp == 0) {
@@ -41,19 +36,15 @@ public class Ramper {
         }
         long elapsed = System.currentTimeMillis() - lastRamp;
         lastRamp = System.currentTimeMillis();
-        if (Math.abs(currentAngle - targetAngle) > 5) {
-            if (currentAngle > targetAngle) {
-                currentAngle -= (angleRampRate * elapsed);
-            } else {
-                currentAngle += (angleRampRate * elapsed);
-            }
-        }
         if (Math.abs(currentTranslationPower - targetTranslationPower) > 0.05) {
             if (currentTranslationPower > targetTranslationPower) {
                 currentTranslationPower -= (translationPowerRampRate * elapsed);
             } else {
                 currentTranslationPower += (translationPowerRampRate * elapsed);
             }
+        }
+        else {
+            currentTranslationPower = targetTranslationPower;
         }
         if (Math.abs(currentRotationPower - targetRotationPower) > 0.05) {
             if (currentRotationPower > targetRotationPower) {
@@ -62,11 +53,9 @@ public class Ramper {
                 currentRotationPower += (rotationPowerRampRate * elapsed);
             }
         }
-
-    }
-
-    public EssentialHeading getHeading() {
-        return new EssentialHeading(currentAngle);
+        else {
+            currentRotationPower = targetRotationPower;
+        }
     }
 
     public double getTranslationPower() {

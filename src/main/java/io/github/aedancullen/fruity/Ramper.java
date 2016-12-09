@@ -1,4 +1,4 @@
-package io.github.aedancullen.fruity.system;
+package io.github.aedancullen.fruity;
 
 /**
  * ----- Fruity Omnidirectional Control System for FTC -----

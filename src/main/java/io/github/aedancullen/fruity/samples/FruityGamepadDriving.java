@@ -1,6 +1,5 @@
 package io.github.aedancullen.fruity.samples;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import java.util.Arrays;
 
-import io.github.aedancullen.fruity.system.FruityController;
-import io.github.aedancullen.fruity.system.MotorConfigurations;
+import io.github.aedancullen.fruity.FruityController;
+import io.github.aedancullen.fruity.MotorConfigurations;
 
 /**
  * ----- Fruity Omnidirectional Control System for FTC -----

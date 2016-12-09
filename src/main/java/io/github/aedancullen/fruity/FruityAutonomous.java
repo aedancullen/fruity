@@ -1,4 +1,4 @@
-package io.github.aedancullen.fruity.system;
+package io.github.aedancullen.fruity;
 /**
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;

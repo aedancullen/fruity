@@ -1,4 +1,4 @@
-package io.github.aedancullen.fruity.system;
+package io.github.aedancullen.fruity;
 
 import java.util.Arrays;
 import java.util.List;

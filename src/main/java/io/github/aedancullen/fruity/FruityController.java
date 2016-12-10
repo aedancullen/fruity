@@ -116,7 +116,7 @@ public class FruityController {
             drive(drivingDirection, ramper.getTranslationPower(), ramper.getRotationPower());
         }
         else {
-            drive(drivingDirection, translationPower, rotationPower);
+            drive(drivingDirection, translationPower * 0.75, rotationPower * 0.5);
         }
     }
 

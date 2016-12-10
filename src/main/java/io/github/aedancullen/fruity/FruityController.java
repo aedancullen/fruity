@@ -38,7 +38,7 @@ public class FruityController {
     Ramper ramper;
     boolean usingRamper = false;
 
-    public int[] movedDistanceZero;
+    private int[] movedDistanceZero;
 
     public FruityController(HardwareMap hardwareMap,
                             Telemetry telemetry,
@@ -130,7 +130,7 @@ public class FruityController {
             EssentialHeading offset = heading.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
             double headingInducedPowerScale = offset.getAngleDegrees() / 90;
             double rotationNecessarySpeed = motorDescription.getRotationGain() * rotationPower;
-            double ratio = rotationPower / ((translationPower * headingInducedPowerScale) + rotationNecessarySpeed);
+            double ratio = rotationPower / (translationPower * headingInducedPowerScale);
             double translationPart = movedEnc - (movedEnc * ratio);
             output += translationPart * headingInducedPowerScale;
         }

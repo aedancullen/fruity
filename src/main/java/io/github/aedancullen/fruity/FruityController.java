@@ -132,7 +132,7 @@ public class FruityController {
             double rotationNecessarySpeed = motorDescription.getRotationGain() * rotationPower;
             double ratio = rotationPower / (translationPower * headingInducedPowerScale);
             double translationPart = movedEnc - (movedEnc * ratio);
-            output += translationPart * headingInducedPowerScale;
+            output += translationPart;
         }
         return (output / motors.size());
     }

@@ -130,7 +130,7 @@ public class FruityController {
             EssentialHeading offset = heading.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
             double headingInducedPowerScale = offset.getAngleDegrees() / 90;
             double rotationNecessarySpeed = motorDescription.getRotationGain() * rotationPower;
-            double ratio = rotationPower / (translationPower * headingInducedPowerScale);
+            double ratio = rotationNecessarySpeed / (translationPower * headingInducedPowerScale);
             double translationPart = movedEnc - (movedEnc * ratio);
             output += translationPart / headingInducedPowerScale;
         }

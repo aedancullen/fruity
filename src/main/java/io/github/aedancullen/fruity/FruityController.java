@@ -15,6 +15,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.List;
 
+import static java.lang.Double.NaN;
+
 /**
  * ----- Fruity Omnidirectional Control System for FTC -----
  *
@@ -37,6 +39,8 @@ public class FruityController {
     EssentialHeading headingStraight;
     Ramper ramper;
     boolean usingRamper = false;
+
+    double lastStickAngle = NaN;
 
     long lastTime;
 
@@ -101,8 +105,19 @@ public class FruityController {
             Log.d(TAG, "[GAMEPAD] Heading now: " + headingNow.getAngleDegrees());
         }
         double stickAngle = Math.toDegrees(Math.atan(gamepad.right_stick_x / -gamepad.right_stick_y));
-        if (Double.isNaN(stickAngle)) { stickAngle = 180; }
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }
+        if (Double.isNaN(stickAngle)) { // Joystick in center
+            if (Double.isNaN(lastStickAngle)) { // last joystick reading does not exist yet
+                stickAngle = 180; // Initialize to straight
+                lastStickAngle = 180;
+            }
+            else {
+                stickAngle = lastStickAngle; // Last joystick reading DOES EXIST, and joystick is currently in center. In order to keep ramping down correctly, keep old angle
+            }
+        }
+        else {
+            lastStickAngle = stickAngle; // IF there's a non-center joystick, just set the 'last' angle to the current and proceed
+        }
         EssentialHeading stickHeading = new EssentialHeading(stickAngle);
         Log.d(TAG, "[GAMEPAD] Stick heading: " + stickHeading.getAngleDegrees());
         double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));

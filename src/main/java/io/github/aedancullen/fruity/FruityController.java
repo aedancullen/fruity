@@ -38,6 +38,8 @@ public class FruityController {
     Ramper ramper;
     boolean usingRamper = false;
 
+    long lastTime;
+
     private int[] movedDistanceZero;
 
     public FruityController(HardwareMap hardwareMap,
@@ -159,6 +161,18 @@ public class FruityController {
             );
         }
         telemetry.addData("* Fruity Controller", "Driving, H" + heading.getAngleDegrees() + ", T" + translationPower + ", R" + rotationPower);
+    }
+
+    public void drive(EssentialHeading heading, double translationPower, EssentialHeading rotationAngle, EssentialHeading currentIMUAngle, double rotationAngleSnapRate) {
+        if (imu == null) {
+            throw new IllegalStateException("IMU must be in use in order to control rotation via a target heading");
+        }
+        if (lastTime == 0) {
+            lastTime = System.currentTimeMillis();
+        }
+        long elapsed = System.currentTimeMillis() - lastTime;
+        lastTime = System.currentTimeMillis();
+        drive(heading, translationPower, (rotationAngle.getAngleDegrees() - currentIMUAngle.getAngleDegrees() * rotationAngleSnapRate * elapsed));
     }
 
 }

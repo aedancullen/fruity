@@ -70,7 +70,7 @@ public class FruityController {
             imu = hardwareMap.get(BNO055IMU.class, imuName);
             imu.initialize(parameters);
             Orientation orientationStraight = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-            headingStraight = EssentialHeading.fromOrientation(orientationStraight);
+            headingStraight = EssentialHeading.fromInvertedOrientation(orientationStraight);
             Log.i(TAG, "[CONSTRUCTOR] IMU enabled!");
             imuStatus = imuName;
         }
@@ -95,7 +95,7 @@ public class FruityController {
         EssentialHeading headingNow = new EssentialHeading(0);
         if (imu != null) {
             Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-            headingNow = EssentialHeading.fromOrientation(orientationNow);
+            headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
             Log.d(TAG, "[GAMEPAD] Heading now: " + headingNow.getAngleDegrees());
         }
         double stickAngle = Math.toDegrees(Math.atan(gamepad.right_stick_x / -gamepad.right_stick_y));

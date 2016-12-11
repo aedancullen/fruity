@@ -36,26 +36,8 @@ public class Ramper {
         }
         long elapsed = System.currentTimeMillis() - lastRamp;
         lastRamp = System.currentTimeMillis();
-        if (Math.abs(currentTranslationPower - targetTranslationPower) > 0.05) {
-            if (currentTranslationPower > targetTranslationPower) {
-                currentTranslationPower -= (translationPowerRampRate * elapsed);
-            } else {
-                currentTranslationPower += (translationPowerRampRate * elapsed);
-            }
-        }
-        else {
-            currentTranslationPower = targetTranslationPower;
-        }
-        if (Math.abs(currentRotationPower - targetRotationPower) > 0.05) {
-            if (currentRotationPower > targetRotationPower) {
-                currentRotationPower -= (rotationPowerRampRate * elapsed);
-            } else {
-                currentRotationPower += (rotationPowerRampRate * elapsed);
-            }
-        }
-        else {
-            currentRotationPower = targetRotationPower;
-        }
+        currentTranslationPower += ((targetTranslationPower - currentTranslationPower) * translationPowerRampRate * elapsed);
+        currentRotationPower += ((targetRotationPower - currentRotationPower) * rotationPowerRampRate * elapsed);
     }
 
     public double getTranslationPower() {

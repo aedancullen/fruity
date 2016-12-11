@@ -48,4 +48,8 @@ public class EssentialHeading {
         return new EssentialHeading(orientation.firstAngle);
     }
 
+    public static EssentialHeading fromInvertedOrientation(Orientation invertedOrientation) {
+        return new EssentialHeading(-invertedOrientation.firstAngle);
+    }
+
 }

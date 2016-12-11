@@ -27,7 +27,7 @@ public class FruityGamepadDriving extends OpMode {
     FruityController fruity;
 
     public void init() {
-        fruity = new FruityController(hardwareMap, telemetry, "",
+        fruity = new FruityController(hardwareMap, telemetry, "imu",
                 Arrays.asList(
                         hardwareMap.dcMotor.get("dcOmni0"),
                         hardwareMap.dcMotor.get("dcOmni90"),

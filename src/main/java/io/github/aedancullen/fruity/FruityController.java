@@ -40,6 +40,9 @@ public class FruityController {
     EssentialHeading headingNow;
     Ramper ramper;
 
+    double rotationAngleChangeRate;
+    long lastTime;
+
     double targetRotationAngle = 0;
 
     double lastStickAngle = NaN;
@@ -55,7 +58,8 @@ public class FruityController {
                             DcMotor.ZeroPowerBehavior zeroPowerBehavior,
                             List<MotorDescription> motorConfiguration,
                             double translationPowerRampRate,
-                            double rotationPowerRampRate
+                            double rotationPowerRampRate,
+                            double rotationAngleChangeRate
     ) {
         Log.i(TAG, "[CONSTRUCTOR] Starting up...");
         if (motors.size() != motorConfiguration.size()) {
@@ -87,6 +91,7 @@ public class FruityController {
         telemetry.addData("* Fruity Controller", "Initialized " + motors.size() + " motors. IMU: " + imuStatus);
 
         ramper = new Ramper(translationPowerRampRate, rotationPowerRampRate);
+        this.rotationAngleChangeRate = rotationAngleChangeRate;
     }
 
     public void updateHeadingNow() {
@@ -116,8 +121,18 @@ public class FruityController {
         Log.d(TAG, "[GAMEPAD] Stick heading: " + stickHeading.getAngleDegrees());
         double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
         Log.d(TAG, "[GAMEPAD] Stick deflection (translation power): " + translationPower);
-        //targetRotationAngle += gamepad.left_stick_x;
-        //Log.d(TAG, "[GAMEPAD] Rotation power:" + rotationPower);
+        if (lastTime == 0) {
+            lastTime = System.currentTimeMillis();
+        }
+        if (gamepad.right_bumper) {
+            targetRotationAngle += rotationAngleChangeRate * (System.currentTimeMillis() - lastTime);
+        }
+        else if (gamepad.left_bumper) {
+            targetRotationAngle -= rotationAngleChangeRate * (System.currentTimeMillis() - lastTime);
+        }
+        lastTime = System.currentTimeMillis();
+
+        Log.d(TAG, "[GAMEPAD] Target rotation angle:" + targetRotationAngle);
         EssentialHeading currentRobotHeading = headingNow.subtract(headingStraight);
         Log.d(TAG, "[GAMEPAD] Current robot abs. heading: " + currentRobotHeading.getAngleDegrees());
         EssentialHeading drivingDirection = stickHeading.subtract(currentRobotHeading);

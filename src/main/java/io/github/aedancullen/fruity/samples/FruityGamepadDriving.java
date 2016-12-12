@@ -39,7 +39,8 @@ public class FruityGamepadDriving extends OpMode {
                 DcMotor.ZeroPowerBehavior.FLOAT,
                 MotorConfigurations.QUAD_NONDIAGONAL_SHORT,
                 0.002,
-                0.01);
+                0.01,
+                0.1);
     }
 
     public void loop() {

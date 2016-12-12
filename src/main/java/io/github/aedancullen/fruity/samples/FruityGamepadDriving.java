@@ -36,8 +36,10 @@ public class FruityGamepadDriving extends OpMode {
                 ),
                 DcMotorSimple.Direction.REVERSE,
                 DcMotor.RunMode.RUN_USING_ENCODER,
-                MotorConfigurations.QUAD_NONDIAGONAL_SHORT);
-        fruity.setupRamper(0.002, 0.002);
+                DcMotor.ZeroPowerBehavior.FLOAT,
+                MotorConfigurations.QUAD_NONDIAGONAL_SHORT,
+                0.002,
+                0.002);
     }
 
     public void loop() {

@@ -38,7 +38,7 @@ public class Ramper {
         else {
             currentTranslationPower += ((targetTranslationPower - currentTranslationPower) * translationPowerRampRate * elapsed);
         }
-        currentRotationPower = ((targetAngle - currentAngle) * rotationPowerRampRate * elapsed);
+        currentRotationPower = ((targetAngle - currentAngle) * rotationPowerRampRate);
     }
 
     public double getTranslationPower() {

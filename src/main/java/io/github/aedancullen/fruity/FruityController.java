@@ -145,8 +145,8 @@ public class FruityController {
     }
 
     public void driveWithRotationAngle(EssentialHeading heading, double translationPower, double rotationAngle) {
-        ramper.ramp(translationPower, targetRotationAngle, headingNow.getAngleDegrees());
-        driveWithRotationPower(heading, ramper.getTranslationPower(), ramper.getRotationPower());
+        ramper.ramp(translationPower, rotationAngle, headingNow.getAngleDegrees());
+        drive(heading, ramper.getTranslationPower(), ramper.getRotationPower());
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {

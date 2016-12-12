@@ -43,6 +43,7 @@ public class FruityGamepadDriving extends OpMode {
     }
 
     public void loop() {
+        fruity.updateHeadingNow();
         fruity.handleGamepad(gamepad1);
     }
 

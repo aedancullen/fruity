@@ -5,7 +5,8 @@ package io.github.aedancullen.fruity;
  *
  * Ramper.java
  * A 'movement smoother' that creates linear control in order
- * to gain smoother acceleration from the gamepad controls.
+ * to gain smoother acceleration from the gamepad controls and smooth control of
+ * rotation power in response to a difference between necessary and observed heading.
  *
  * (c) 2016 Aedan Cullen. Distributed under the GNU GPLv3 license.
  */
@@ -37,7 +38,7 @@ public class Ramper {
         else {
             currentTranslationPower += ((targetTranslationPower - currentTranslationPower) * translationPowerRampRate * elapsed);
         }
-        currentRotationPower += ((targetAngle - currentAngle) * rotationPowerRampRate * elapsed);
+        currentRotationPower = ((targetAngle - currentAngle) * rotationPowerRampRate * elapsed);
     }
 
     public double getTranslationPower() {

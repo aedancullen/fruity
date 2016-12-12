@@ -106,7 +106,7 @@ public class FruityController {
                 lastStickAngle = 180;
             }
             else {
-                stickAngle = lastStickAngle; // Last joystick reading DOES EXIST, and joystick is currently in center. In order to keep ramping down correctly, keep old angle
+                stickAngle = lastStickAngle; // Last joystick reading DOES EXIST, and joystick is currently in center. Keep old angle
             }
         }
         else {
@@ -123,8 +123,7 @@ public class FruityController {
         EssentialHeading drivingDirection = stickHeading.subtract(currentRobotHeading);
         Log.d(TAG, "[GAMEPAD] Necessary driving direction: " + currentRobotHeading.getAngleDegrees());
 
-        ramper.ramp(translationPower, targetRotationAngle, headingNow.getAngleDegrees());
-        driveWithRotationAngle(drivingDirection, ramper.getTranslationPower(), ramper.getRotationPower());
+        driveWithRamping(drivingDirection, translationPower, targetRotationAngle);
     }
 
     public double estimateMovedDistance(EssentialHeading heading, double translationPower, double rotationPower) {
@@ -144,7 +143,7 @@ public class FruityController {
         return (output / motors.size());
     }
 
-    public void driveWithRotationAngle(EssentialHeading heading, double translationPower, double rotationAngle) {
+    public void driveWithRamping(EssentialHeading heading, double translationPower, double rotationAngle) {
         ramper.ramp(translationPower, rotationAngle, headingNow.getAngleDegrees());
         drive(heading, ramper.getTranslationPower(), ramper.getRotationPower());
     }

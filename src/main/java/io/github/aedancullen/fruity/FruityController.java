@@ -37,15 +37,12 @@ public class FruityController {
     private Telemetry telemetry;
     BNO055IMU imu;
     EssentialHeading headingStraight;
-    EssentialHeading headingNow;
     Ramper ramper;
-
-    double rotationAngleChangeRate;
-    long lastTime;
-
-    double targetRotationAngle = 0;
+    boolean usingRamper = false;
 
     double lastStickAngle = NaN;
+
+    long lastTime;
 
     private int[] movedDistanceZero;
 
@@ -55,11 +52,7 @@ public class FruityController {
                             List<DcMotor> motors,
                             DcMotorSimple.Direction clockwiseDirection,
                             DcMotor.RunMode runMode,
-                            DcMotor.ZeroPowerBehavior zeroPowerBehavior,
-                            List<MotorDescription> motorConfiguration,
-                            double translationPowerRampRate,
-                            double rotationPowerRampRate,
-                            double rotationAngleChangeRate
+                            List<MotorDescription> motorConfiguration
     ) {
         Log.i(TAG, "[CONSTRUCTOR] Starting up...");
         if (motors.size() != motorConfiguration.size()) {
@@ -72,37 +65,45 @@ public class FruityController {
         for (int i = 0; i < motors.size(); i++) {
             DcMotor motor = motors.get(i);
             motor.setMode(runMode);
-            motor.setZeroPowerBehavior(zeroPowerBehavior);
             motor.setDirection(clockwiseDirection);
         }
         movedDistanceZero = new int[motors.size()];
         headingStraight = new EssentialHeading(0);
         String imuStatus;
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        imu = hardwareMap.get(BNO055IMU.class, imuName);
-        imu.initialize(parameters);
-        Orientation orientationStraight = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-        headingStraight = EssentialHeading.fromInvertedOrientation(orientationStraight);
-        Log.i(TAG, "[CONSTRUCTOR] IMU enabled!");
-        imuStatus = imuName;
-
+        if (!imuName.equals("")) {
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+            imu = hardwareMap.get(BNO055IMU.class, imuName);
+            imu.initialize(parameters);
+            Orientation orientationStraight = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+            headingStraight = EssentialHeading.fromInvertedOrientation(orientationStraight);
+            Log.i(TAG, "[CONSTRUCTOR] IMU enabled!");
+            imuStatus = imuName;
+        }
+        else {
+            Log.i(TAG, "[CONSTRUCTOR] Not using an IMU");
+            imuStatus = "not in use";
+        }
         Log.i(TAG, "[CONSTRUCTOR] Straight heading: " + headingStraight.getAngleDegrees());
         telemetry.addData("* Fruity Controller", "Initialized " + motors.size() + " motors. IMU: " + imuStatus);
-
-        ramper = new Ramper(translationPowerRampRate, rotationPowerRampRate);
-        this.rotationAngleChangeRate = rotationAngleChangeRate;
     }
 
-    public void updateHeadingNow() {
-        Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-        headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
-        Log.d(TAG, "[GAMEPAD] Heading now: " + headingNow.getAngleDegrees());
+    public void setupRamper(double translationPowerRampRate, double rotationPowerRampRate) {
+        ramper = new Ramper(translationPowerRampRate, rotationPowerRampRate);
+        usingRamper = true;
+    }
+
+    public void disableRamper() {
+        usingRamper = false;
     }
 
     public void handleGamepad(Gamepad gamepad) {
         EssentialHeading headingNow = new EssentialHeading(0);
-
+        if (imu != null) {
+            Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+            headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
+            Log.d(TAG, "[GAMEPAD] Heading now: " + headingNow.getAngleDegrees());
+        }
         double stickAngle = Math.toDegrees(Math.atan(gamepad.right_stick_x / -gamepad.right_stick_y));
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }
         if (Double.isNaN(stickAngle)) { // Joystick in center
@@ -111,7 +112,7 @@ public class FruityController {
                 lastStickAngle = 180;
             }
             else {
-                stickAngle = lastStickAngle; // Last joystick reading DOES EXIST, and joystick is currently in center. Keep old angle
+                stickAngle = lastStickAngle; // Last joystick reading DOES EXIST, and joystick is currently in center. In order to keep ramping down correctly, keep old angle
             }
         }
         else {
@@ -121,24 +122,19 @@ public class FruityController {
         Log.d(TAG, "[GAMEPAD] Stick heading: " + stickHeading.getAngleDegrees());
         double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
         Log.d(TAG, "[GAMEPAD] Stick deflection (translation power): " + translationPower);
-        if (lastTime == 0) {
-            lastTime = System.currentTimeMillis();
-        }
-        if (gamepad.right_bumper) {
-            targetRotationAngle += rotationAngleChangeRate * (System.currentTimeMillis() - lastTime);
-        }
-        else if (gamepad.left_bumper) {
-            targetRotationAngle -= rotationAngleChangeRate * (System.currentTimeMillis() - lastTime);
-        }
-        lastTime = System.currentTimeMillis();
-
-        Log.d(TAG, "[GAMEPAD] Target rotation angle:" + targetRotationAngle);
+        double rotationPower = gamepad.left_stick_x;
+        Log.d(TAG, "[GAMEPAD] Rotation power:" + rotationPower);
         EssentialHeading currentRobotHeading = headingNow.subtract(headingStraight);
         Log.d(TAG, "[GAMEPAD] Current robot abs. heading: " + currentRobotHeading.getAngleDegrees());
         EssentialHeading drivingDirection = stickHeading.subtract(currentRobotHeading);
         Log.d(TAG, "[GAMEPAD] Necessary driving direction: " + currentRobotHeading.getAngleDegrees());
-
-        driveWithRamping(drivingDirection, translationPower, targetRotationAngle);
+        if (usingRamper) {
+            ramper.ramp(translationPower, rotationPower);
+            drive(drivingDirection, ramper.getTranslationPower(), ramper.getRotationPower());
+        }
+        else {
+            drive(drivingDirection, translationPower, rotationPower);
+        }
     }
 
     public double estimateMovedDistance(EssentialHeading heading, double translationPower, double rotationPower) {
@@ -156,11 +152,6 @@ public class FruityController {
             output += translationPart / headingInducedPowerScale;
         }
         return (output / motors.size());
-    }
-
-    public void driveWithRamping(EssentialHeading heading, double translationPower, double rotationAngle) {
-        ramper.ramp(translationPower, rotationAngle, headingNow.getAngleDegrees());
-        drive(heading, ramper.getTranslationPower(), ramper.getRotationPower());
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {
@@ -185,6 +176,18 @@ public class FruityController {
             );
         }
         telemetry.addData("* Fruity Controller", "Driving, H" + heading.getAngleDegrees() + ", T" + translationPower + ", R" + rotationPower);
+    }
+
+    public void drive(EssentialHeading heading, double translationPower, EssentialHeading rotationAngle, EssentialHeading currentIMUAngle, double rotationAngleSnapRate) {
+        if (imu == null) {
+            throw new IllegalStateException("IMU must be in use in order to control rotation via a target heading");
+        }
+        if (lastTime == 0) {
+            lastTime = System.currentTimeMillis();
+        }
+        long elapsed = System.currentTimeMillis() - lastTime;
+        lastTime = System.currentTimeMillis();
+        drive(heading, translationPower, (rotationAngle.getAngleDegrees() - currentIMUAngle.getAngleDegrees() * rotationAngleSnapRate * elapsed));
     }
 
 }

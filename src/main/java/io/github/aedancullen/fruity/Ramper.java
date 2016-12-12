@@ -4,14 +4,16 @@ package io.github.aedancullen.fruity;
  * ----- Fruity Omnidirectional Control System for FTC -----
  *
  * Ramper.java
- * A 'movement smoother' that creates linear control in order
- * to gain smoother acceleration from the gamepad controls and smooth control of
- * rotation power in response to a difference between necessary and observed heading.
+ * A 'movement smoother' that creates linear control curves in order
+ * to gain smoother acceleration/deceleration from the gamepad controls.
  *
  * (c) 2016 Aedan Cullen. Distributed under the GNU GPLv3 license.
  */
 
 public class Ramper {
+
+    double targetTranslationPower;
+    double targetRotationPower;
 
     double currentTranslationPower;
     double currentRotationPower;
@@ -26,24 +28,16 @@ public class Ramper {
         this.rotationPowerRampRate = rotationPowerRampRate;
     }
 
-    public void ramp(double targetTranslationPower, double targetAngle, double currentAngle) {
+    public void ramp(double translationPower, double rotationPower) {
+        targetTranslationPower = translationPower;
+        targetRotationPower = rotationPower;
         if (lastRamp == 0) {
             lastRamp = System.currentTimeMillis();
         }
         long elapsed = System.currentTimeMillis() - lastRamp;
         lastRamp = System.currentTimeMillis();
-        if (targetTranslationPower == 0) {
-            currentTranslationPower = 0;
-        }
-        else {
-            currentTranslationPower += ((targetTranslationPower - currentTranslationPower) * translationPowerRampRate * elapsed);
-        }
-        if (Math.abs(targetAngle - currentAngle) > 2) {
-            currentRotationPower = ((targetAngle - currentAngle) * rotationPowerRampRate);
-        }
-        else {
-            currentRotationPower = 0;
-        }
+        currentTranslationPower += ((targetTranslationPower - currentTranslationPower) * translationPowerRampRate * elapsed);
+        currentRotationPower += ((targetRotationPower - currentRotationPower) * rotationPowerRampRate * elapsed);
     }
 
     public double getTranslationPower() {

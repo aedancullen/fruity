@@ -154,6 +154,20 @@ public class FruityController {
         return (output / motors.size());
     }
 
+    public double getNecessaryRotationPower(EssentialHeading target, double gain) {
+        if (imu == null) {
+            throw new IllegalStateException("Cannot calculate necessary rotation power without IMU enabled");
+        }
+        Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        EssentialHeading headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
+        return getNecessaryRotationPower(target, headingNow, gain);
+    }
+
+    public double getNecessaryRotationPower(EssentialHeading target, EssentialHeading current, double gain) {
+        EssentialHeading difference = current.subtract(target);
+        return difference.getAngleDegrees() / 180 * gain;
+    }
+
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {
         Log.d(TAG, "[DRIVEALG] Got heading: " + heading.getAngleDegrees());
         Log.d(TAG, "[DRIVEALG] Got translation power: " + translationPower);

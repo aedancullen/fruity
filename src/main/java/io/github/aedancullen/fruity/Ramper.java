@@ -21,11 +21,14 @@ public class Ramper {
     double translationPowerRampRate;
     double rotationPowerRampRate;
 
+    boolean rampDownEnabled;
+
     long lastRamp = 0;
 
-    public Ramper(double translationPowerRampRate, double rotationPowerRampRate) {
+    public Ramper(double translationPowerRampRate, double rotationPowerRampRate, boolean rampDownEnabled) {
         this.translationPowerRampRate = translationPowerRampRate;
         this.rotationPowerRampRate = rotationPowerRampRate;
+        this.rampDownEnabled = rampDownEnabled;
     }
 
     public void ramp(double translationPower, double rotationPower) {
@@ -36,8 +39,20 @@ public class Ramper {
         }
         long elapsed = System.currentTimeMillis() - lastRamp;
         lastRamp = System.currentTimeMillis();
-        currentTranslationPower += ((targetTranslationPower - currentTranslationPower) * translationPowerRampRate * elapsed);
-        currentRotationPower += ((targetRotationPower - currentRotationPower) * rotationPowerRampRate * elapsed);
+
+        if (!rampDownEnabled && targetTranslationPower - currentTranslationPower < 0) {
+            currentTranslationPower = targetTranslationPower;
+        }
+        else {
+            currentTranslationPower += ((targetTranslationPower - currentTranslationPower) * translationPowerRampRate * elapsed);
+        }
+
+        if (!rampDownEnabled && targetRotationPower - currentRotationPower < 0) {
+            currentRotationPower = targetRotationPower;
+        }
+        else {
+            currentRotationPower += ((targetRotationPower - currentRotationPower) * rotationPowerRampRate * elapsed);
+        }
     }
 
     public double getTranslationPower() {

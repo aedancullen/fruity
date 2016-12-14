@@ -47,7 +47,7 @@ public class Ramper {
             currentTranslationPower += ((targetTranslationPower - currentTranslationPower) * translationPowerRampRate * elapsed);
         }
 
-        if (!rampDownEnabled && targetRotationPower - currentRotationPower < 0) {
+        if (!rampDownEnabled && Math.abs(targetRotationPower) < Math.abs(currentRotationPower)) {
             currentRotationPower = targetRotationPower;
         }
         else {

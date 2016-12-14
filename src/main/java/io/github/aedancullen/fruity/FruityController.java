@@ -129,8 +129,7 @@ public class FruityController {
         EssentialHeading drivingDirection = stickHeading.subtract(currentRobotHeading);
         Log.d(TAG, "[GAMEPAD] Necessary driving direction: " + currentRobotHeading.getAngleDegrees());
         if (usingRamper) {
-            ramper.ramp(translationPower, rotationPower);
-            drive(drivingDirection, ramper.getTranslationPower(), ramper.getRotationPower());
+            driveWithRamper(drivingDirection, translationPower, rotationPower);
         }
         else {
             drive(drivingDirection, translationPower, rotationPower);
@@ -166,6 +165,14 @@ public class FruityController {
     public double getNecessaryRotationPower(EssentialHeading target, EssentialHeading current, double gain) {
         EssentialHeading difference = current.subtract(target);
         return difference.getAngleDegrees() / 180 * gain;
+    }
+
+    public void driveWithRamper(EssentialHeading heading, double translationPower, double rotationPower) {
+        if (!usingRamper) {
+            throw new IllegalStateException("Cannot drive with ramper when ramper is not in use");
+        }
+        ramper.ramp(translationPower, rotationPower);
+        drive(heading, ramper.getTranslationPower(), ramper.getRotationPower());
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {

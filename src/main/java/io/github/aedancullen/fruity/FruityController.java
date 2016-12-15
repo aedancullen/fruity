@@ -98,12 +98,6 @@ public class FruityController {
     }
 
     public void handleGamepad(Gamepad gamepad) {
-        EssentialHeading headingNow = new EssentialHeading(0);
-        if (imu != null) {
-            Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-            headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
-            Log.d(TAG, "[GAMEPAD] Heading now: " + headingNow.getAngleDegrees());
-        }
         double stickAngle = Math.toDegrees(Math.atan(gamepad.right_stick_x / -gamepad.right_stick_y));
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }
         if (Double.isNaN(stickAngle)) { // Joystick in center
@@ -124,15 +118,11 @@ public class FruityController {
         Log.d(TAG, "[GAMEPAD] Stick deflection (translation power): " + translationPower);
         double rotationPower = gamepad.left_stick_x;
         Log.d(TAG, "[GAMEPAD] Rotation power:" + rotationPower);
-        EssentialHeading currentRobotHeading = headingNow.subtract(headingStraight);
-        Log.d(TAG, "[GAMEPAD] Current robot abs. heading: " + currentRobotHeading.getAngleDegrees());
-        EssentialHeading drivingDirection = stickHeading.subtract(currentRobotHeading);
-        Log.d(TAG, "[GAMEPAD] Necessary driving direction: " + currentRobotHeading.getAngleDegrees());
         if (usingRamper) {
-            driveWithRamper(drivingDirection, translationPower, rotationPower);
+            driveWithRamper(stickHeading, translationPower, rotationPower);
         }
         else {
-            drive(drivingDirection, translationPower, rotationPower);
+            drive(stickHeading, translationPower, rotationPower);
         }
     }
 
@@ -163,8 +153,17 @@ public class FruityController {
     }
 
     public double getNecessaryRotationPower(EssentialHeading target, EssentialHeading current, double gain) {
-        EssentialHeading difference = current.subtract(target);
-        return difference.getAngleDegrees() / 180 * gain;
+        EssentialHeading difference = target.subtract(current);
+        return difference.getAngleDegrees() * gain;
+    }
+
+    public boolean isFacing(EssentialHeading target) {
+        if (imu == null) {
+            throw new IllegalStateException("Cannot find direction with IMU disabled");
+        }
+        Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        EssentialHeading headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
+        return Math.abs(headingNow.subtract(target).getAngleDegrees()) < 2;
     }
 
     public void driveWithRamper(EssentialHeading heading, double translationPower, double rotationPower) {
@@ -176,6 +175,17 @@ public class FruityController {
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {
+        EssentialHeading headingNow = new EssentialHeading(0);
+        if (imu != null) {
+            Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+            headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
+            Log.d(TAG, "[DRIVEALG] Heading now: " + headingNow.getAngleDegrees());
+        }
+        EssentialHeading currentRobotHeading = headingNow.subtract(headingStraight);
+        Log.d(TAG, "[DRIVEALG] Current robot abs. heading: " + currentRobotHeading.getAngleDegrees());
+        EssentialHeading drivingDirection = heading.subtract(currentRobotHeading);
+        Log.d(TAG, "[DRIVEALG] Necessary driving direction: " + currentRobotHeading.getAngleDegrees());
+
         Log.d(TAG, "[DRIVEALG] Got heading: " + heading.getAngleDegrees());
         Log.d(TAG, "[DRIVEALG] Got translation power: " + translationPower);
         Log.d(TAG, "[DRIVEALG] Got rotation power: " + rotationPower);
@@ -183,7 +193,7 @@ public class FruityController {
             DcMotor motor = motors.get(i);
             MotorDescription motorDescription = motorConfiguration.get(i);
             Log.d(TAG, "[DRIVEALG-"+i+"] Now processing for motor with heading" + motorDescription.getEssentialHeading().getAngleDegrees());
-            EssentialHeading offset = heading.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
+            EssentialHeading offset = drivingDirection.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
             Log.d(TAG, "[DRIVEALG-"+i+"] Heading offset: " + offset.getAngleDegrees());
             double headingInducedPowerScale = offset.getAngleDegrees() / 90;
             Log.d(TAG, "[DRIVEALG-"+i+"] Heading-induced power scale: " + headingInducedPowerScale);

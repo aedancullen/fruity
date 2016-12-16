@@ -44,6 +44,8 @@ public class FruityController {
 
     long lastTime;
 
+    boolean wasPressedLastTime = false;
+
     private int[] movedDistanceZero;
 
     EssentialHeading holdingHeading = new EssentialHeading(0);
@@ -161,13 +163,23 @@ public class FruityController {
 
         if (gamepad.right_bumper) {
             rotationPower = 0.8;
+            wasPressedLastTime = true;
         }
         else if (gamepad.left_bumper) {
             rotationPower = -0.8;
+            wasPressedLastTime = true;
         }
-
-        if (gamepad.left_stick_x != 0) {
+        else if (gamepad.left_stick_x != 0) {
             rotationPower = gamepad.left_stick_x;
+            wasPressedLastTime = true;
+        }
+        else {
+            if (wasPressedLastTime = true) {
+                wasPressedLastTime = false;
+                Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+                EssentialHeading headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
+                holdingHeading = headingNow;
+            }
         }
 
         Log.d(TAG, "[GAMEPAD] Rotation power:" + rotationPower);

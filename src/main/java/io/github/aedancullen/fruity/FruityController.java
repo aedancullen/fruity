@@ -115,8 +115,40 @@ public class FruityController {
         EssentialHeading stickHeading = new EssentialHeading(stickAngle);
         Log.d(TAG, "[GAMEPAD] Stick heading: " + stickHeading.getAngleDegrees());
         double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
+        if (translationPower == 0) { // Use de dpad
+            double angle = 0;
+            boolean pressed = false;
+            if (gamepad.dpad_up) {
+                angle += 0;
+                pressed = true;
+            }
+            if (gamepad.dpad_right) {
+                angle += 90;
+                pressed = true;
+            }
+            if (gamepad.dpad_down) {
+                angle += 180;
+                pressed = true;
+            }
+            if (gamepad.dpad_left) {
+                angle += -90;
+                pressed = true;
+            }
+            if (pressed) {
+                translationPower = 0.8;
+                stickHeading = new EssentialHeading(angle / 2); // divide by two  - if two are pressed, avg for diagonal
+            }
+        }
         Log.d(TAG, "[GAMEPAD] Stick deflection (translation power): " + translationPower);
         double rotationPower = gamepad.left_stick_x;
+        if (rotationPower == 0) {
+            if (gamepad.right_bumper) {
+                rotationPower = 0.8;
+            }
+            else if (gamepad.left_bumper) {
+                rotationPower = -0.8;
+            }
+        }
         Log.d(TAG, "[GAMEPAD] Rotation power:" + rotationPower);
         if (usingRamper) {
             driveWithRamper(stickHeading, translationPower, rotationPower);

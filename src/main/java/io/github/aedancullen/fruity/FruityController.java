@@ -117,26 +117,26 @@ public class FruityController {
         double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
         if (translationPower == 0) { // Use de dpad
             double angle = 0;
-            boolean pressed = false;
+            int nPressed = 0;
             if (gamepad.dpad_up) {
                 angle += 0;
-                pressed = true;
+                nPressed++;
             }
             if (gamepad.dpad_right) {
                 angle += 90;
-                pressed = true;
+                nPressed++;
             }
             if (gamepad.dpad_down) {
                 angle += 180;
-                pressed = true;
+                nPressed++;
             }
             if (gamepad.dpad_left) {
                 angle += -90;
-                pressed = true;
+                nPressed++;
             }
-            if (pressed) {
+            if (nPressed > 0) {
                 translationPower = 0.8;
-                stickHeading = new EssentialHeading(angle / 2); // divide by two  - if two are pressed, avg for diagonal
+                stickHeading = new EssentialHeading(angle / nPressed); // divide by two  - if two are pressed, avg for diagonal
             }
         }
         Log.d(TAG, "[GAMEPAD] Stick deflection (translation power): " + translationPower);
@@ -147,6 +147,21 @@ public class FruityController {
             }
             else if (gamepad.left_bumper) {
                 rotationPower = -0.8;
+            }
+            else {
+                //Are we angle-snapping?
+                if (gamepad.y) {
+                    rotationPower = this.getNecessaryRotationPower(new EssentialHeading(0), 0.006);
+                }
+                else if (gamepad.b) {
+                    rotationPower = this.getNecessaryRotationPower(new EssentialHeading(90), 0.006);
+                }
+                else if (gamepad.a) {
+                    rotationPower = this.getNecessaryRotationPower(new EssentialHeading(180), 0.006);
+                }
+                else if (gamepad.x) {
+                    rotationPower = this.getNecessaryRotationPower(new EssentialHeading(-90), 0.006);
+                }
             }
         }
         Log.d(TAG, "[GAMEPAD] Rotation power:" + rotationPower);

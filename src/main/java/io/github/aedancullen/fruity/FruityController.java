@@ -174,7 +174,7 @@ public class FruityController {
             wasPressedLastTime = true;
         }
         else {
-            if (wasPressedLastTime = true) {
+            if (wasPressedLastTime) {
                 wasPressedLastTime = false;
                 Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
                 EssentialHeading headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);

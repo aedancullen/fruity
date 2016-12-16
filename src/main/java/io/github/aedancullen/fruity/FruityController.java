@@ -46,6 +46,8 @@ public class FruityController {
 
     private int[] movedDistanceZero;
 
+    EssentialHeading holdingHeading = new EssentialHeading(0);
+
     public FruityController(HardwareMap hardwareMap,
                             Telemetry telemetry,
                             String imuName,
@@ -140,30 +142,34 @@ public class FruityController {
             }
         }
         Log.d(TAG, "[GAMEPAD] Stick deflection (translation power): " + translationPower);
-        double rotationPower = gamepad.left_stick_x;
-        if (rotationPower == 0) {
-            if (gamepad.right_bumper) {
-                rotationPower = 0.8;
-            }
-            else if (gamepad.left_bumper) {
-                rotationPower = -0.8;
-            }
-            else {
-                //Are we angle-snapping?
-                if (gamepad.y) {
-                    rotationPower = this.getNecessaryRotationPower(new EssentialHeading(0), 0.006);
-                }
-                else if (gamepad.b) {
-                    rotationPower = this.getNecessaryRotationPower(new EssentialHeading(90), 0.006);
-                }
-                else if (gamepad.a) {
-                    rotationPower = this.getNecessaryRotationPower(new EssentialHeading(180), 0.006);
-                }
-                else if (gamepad.x) {
-                    rotationPower = this.getNecessaryRotationPower(new EssentialHeading(-90), 0.006);
-                }
-            }
+
+        //Are we angle-snapping?
+        if (gamepad.y) {
+            holdingHeading = new EssentialHeading(0);
         }
+        else if (gamepad.b) {
+            holdingHeading = new EssentialHeading(90);
+        }
+        else if (gamepad.a) {
+            holdingHeading = new EssentialHeading(180);
+        }
+        else if (gamepad.x) {
+            holdingHeading = new EssentialHeading(-90);
+        }
+
+        double rotationPower = this.getNecessaryRotationPower(holdingHeading, 0.006);
+
+        if (gamepad.right_bumper) {
+            rotationPower = 0.8;
+        }
+        else if (gamepad.left_bumper) {
+            rotationPower = -0.8;
+        }
+
+        if (gamepad.left_stick_x != 0) {
+            rotationPower = gamepad.left_stick_x;
+        }
+
         Log.d(TAG, "[GAMEPAD] Rotation power:" + rotationPower);
         if (usingRamper) {
             driveWithRamper(stickHeading, translationPower, rotationPower);

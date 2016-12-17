@@ -120,6 +120,36 @@ public class FruityController {
         Log.d(TAG, "[GAMEPAD] Stick heading: " + stickHeading.getAngleDegrees());
         double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
 
+        if (translationPower == 0) {
+            translationPower = 0.8;
+            if (gamepad.y && !gamepad.x && !gamepad.b) {
+                stickHeading = new EssentialHeading(0);
+            }
+            else if (gamepad.y && gamepad.b) {
+                stickHeading = new EssentialHeading(45);
+            }
+            else if (gamepad.b && !gamepad.y && !gamepad.a) {
+                stickHeading = new EssentialHeading(90);
+            }
+            else if (gamepad.b && gamepad.a) {
+                stickHeading = new EssentialHeading(135);
+            }
+            else if (gamepad.a && !gamepad.b && !gamepad.x) {
+                stickHeading = new EssentialHeading(180);
+            }
+            else if (gamepad.a && gamepad.x) {
+                stickHeading = new EssentialHeading(-135);
+            }
+            else if (gamepad.x && !gamepad.a && !gamepad.y) {
+                stickHeading = new EssentialHeading(-90);
+            }
+            else if (gamepad.x && gamepad.y) {
+                stickHeading = new EssentialHeading(-45);
+            }
+            else {
+                translationPower = 0;
+            }
+        }
         Log.d(TAG, "[GAMEPAD] Stick deflection (translation power): " + translationPower);
 
         //Are we angle-snapping?

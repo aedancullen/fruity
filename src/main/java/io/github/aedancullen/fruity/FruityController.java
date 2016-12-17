@@ -119,47 +119,36 @@ public class FruityController {
         EssentialHeading stickHeading = new EssentialHeading(stickAngle);
         Log.d(TAG, "[GAMEPAD] Stick heading: " + stickHeading.getAngleDegrees());
         double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
-        if (translationPower == 0) { // Use de dpad
-            double angle = 0;
-            int nPressed = 0;
-            if (gamepad.dpad_up) {
-                angle += 0;
-                nPressed++;
-            }
-            if (gamepad.dpad_right) {
-                angle += 90;
-                nPressed++;
-            }
-            if (gamepad.dpad_down) {
-                angle += 180;
-                nPressed++;
-            }
-            if (gamepad.dpad_left) {
-                angle += -90;
-                nPressed++;
-            }
-            if (nPressed > 0) {
-                translationPower = 0.8;
-                stickHeading = new EssentialHeading(angle / nPressed); // divide by two  - if two are pressed, avg for diagonal
-            }
-        }
+
         Log.d(TAG, "[GAMEPAD] Stick deflection (translation power): " + translationPower);
 
         //Are we angle-snapping?
-        if (gamepad.y) {
+        if (gamepad.dpad_up && !gamepad.dpad_right && !gamepad.dpad_left) {
             holdingHeading = new EssentialHeading(0);
         }
-        else if (gamepad.b) {
+        else if (gamepad.dpad_up && gamepad.dpad_right) {
+            holdingHeading = new EssentialHeading(45);
+        }
+        else if (gamepad.dpad_right && !gamepad.dpad_up && !gamepad.dpad_down) {
             holdingHeading = new EssentialHeading(90);
         }
-        else if (gamepad.a) {
+        else if (gamepad.dpad_right && gamepad.dpad_down) {
+            holdingHeading = new EssentialHeading(135);
+        }
+        else if (gamepad.dpad_down && !gamepad.dpad_right && !gamepad.dpad_left) {
             holdingHeading = new EssentialHeading(180);
         }
-        else if (gamepad.x) {
+        else if (gamepad.dpad_down && gamepad.dpad_left) {
+            holdingHeading = new EssentialHeading(-135);
+        }
+        else if (gamepad.dpad_left && !gamepad.dpad_down && !gamepad.dpad_up) {
             holdingHeading = new EssentialHeading(-90);
         }
+        else if (gamepad.dpad_left && gamepad.dpad_up) {
+            holdingHeading = new EssentialHeading(-45);
+        }
 
-        double rotationPower = this.getNecessaryRotationPower(holdingHeading, 0.006);
+        double rotationPower = this.getNecessaryRotationPower(holdingHeading, 0.012);
 
         if (gamepad.right_bumper) {
             rotationPower = 0.8;

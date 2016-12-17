@@ -102,6 +102,13 @@ public class FruityController {
     }
 
     public void handleGamepad(Gamepad gamepad) {
+        if (gamepad.back) {
+            Orientation orientationStraight = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+            headingStraight = EssentialHeading.fromInvertedOrientation(orientationStraight);
+            holdingHeading = new EssentialHeading(0);
+        }
+
+
         double stickAngle = Math.toDegrees(Math.atan(gamepad.right_stick_x / -gamepad.right_stick_y));
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }
         if (Double.isNaN(stickAngle)) { // Joystick in center
@@ -178,7 +185,7 @@ public class FruityController {
             holdingHeading = new EssentialHeading(-45);
         }
 
-        double rotationPower = this.getNecessaryRotationPower(holdingHeading, 0.012);
+        double rotationPower = this.getNecessaryRotationPower((new EssentialHeading(headingStraight.getAngleDegrees() + holdingHeading.getAngleDegrees())), 0.012);
 
         if (gamepad.right_bumper) {
             rotationPower = 0.4;

@@ -204,7 +204,7 @@ public class FruityController {
                 wasPressedLastTime = false;
                 Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
                 EssentialHeading headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
-                holdingHeading = headingNow;
+                holdingHeading = headingNow.subtract(headingStraight);
             }
         }
 

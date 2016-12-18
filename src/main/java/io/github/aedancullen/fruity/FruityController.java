@@ -244,6 +244,9 @@ public class FruityController {
     }
 
     public double getNecessaryRotationPower(EssentialHeading target, EssentialHeading current, double gain) {
+        if (Math.abs(current.subtract(target).getAngleDegrees()) < 2) {
+            return 0;
+        }
         EssentialHeading difference = target.subtract(current);
         return difference.getAngleDegrees() * gain;
     }

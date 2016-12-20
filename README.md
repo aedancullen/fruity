@@ -9,8 +9,5 @@ Wheel configurations are laid out in an organized fashion, with several pre-conf
 ## Forward-heading compensation
 Support is also provided for inertial measurement units, which can be utilized in order to allow for heading compensation, or the adjustment of the input target driving angle such that the forward direction is always the direction facing away from the robot driver. This feature implicitly allows for the usage of asynchronous rotation at the same time as translation -- since on each iteration of the algorithm the forward direction will be updated. Thus, the robot  will continue translating in the same direction even as it rotates in place. 
 
-## Path planning and following
-Since it is often necessary to program a robot to follow a specific, predefined path autonomously, Fruity provides support for the reading of files from external storage in a comma-separated values format which defines segments of motion and their parameters which the robot will follow. Such files can be edited directly using a spreadsheet application on a PC, then transferred to the phone's external storage for use. These files specify in which direction the robot should drive, the distance of the driving, the speed that should be used, and other data.
-
 ## Use in Android Studio
 This repository is provided as a module that can be imported into Android Studio in order for other programmers to integrate the Fruity driving controller into their own code. In order for the API to become accessible from the ftc_app TeamCode module, a compile dependency can be added to the TeamCode module which requires the Fruity module.

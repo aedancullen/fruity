@@ -217,23 +217,6 @@ public class FruityController {
         }
     }
 
-    public double estimateMovedDistance(EssentialHeading heading, double translationPower, double rotationPower) {
-        double output = 0;
-        for (int i = 0; i < motors.size(); i++) {
-            DcMotor motor = motors.get(i);
-            int movedEnc = motor.getCurrentPosition() - movedDistanceZero[i];
-            movedDistanceZero[i] = movedEnc;
-            MotorDescription motorDescription = motorConfiguration.get(i);
-            EssentialHeading offset = heading.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
-            double headingInducedPowerScale = offset.getAngleDegrees() / 90;
-            double rotationNecessarySpeed = motorDescription.getRotationGain() * rotationPower;
-            double ratio = rotationNecessarySpeed / (translationPower * headingInducedPowerScale);
-            double translationPart = movedEnc - (movedEnc * ratio);
-            output += translationPart / headingInducedPowerScale;
-        }
-        return (output / motors.size());
-    }
-
     public double getNecessaryRotationPower(EssentialHeading target, double gain) {
         if (imu == null) {
             throw new IllegalStateException("Cannot calculate necessary rotation power without IMU enabled");
@@ -301,18 +284,6 @@ public class FruityController {
             );
         }
         telemetry.addData("* Fruity Controller", "Driving, H" + heading.getAngleDegrees() + ", T" + translationPower + ", R" + rotationPower);
-    }
-
-    public void drive(EssentialHeading heading, double translationPower, EssentialHeading rotationAngle, EssentialHeading currentIMUAngle, double rotationAngleSnapRate) {
-        if (imu == null) {
-            throw new IllegalStateException("IMU must be in use in order to control rotation via a target heading");
-        }
-        if (lastTime == 0) {
-            lastTime = System.currentTimeMillis();
-        }
-        long elapsed = System.currentTimeMillis() - lastTime;
-        lastTime = System.currentTimeMillis();
-        drive(heading, translationPower, (rotationAngle.getAngleDegrees() - currentIMUAngle.getAngleDegrees() * rotationAngleSnapRate * elapsed));
     }
 
 }

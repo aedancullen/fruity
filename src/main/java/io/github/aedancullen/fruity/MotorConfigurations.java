@@ -23,10 +23,10 @@ public class MotorConfigurations {
     );
 
     public static List<MotorDescription> QUAD_NONDIAGONAL_SHORT = Arrays.asList(
-            new MotorDescription(0, 0.3),
-            new MotorDescription(90, 0.7),
+            new MotorDescription(0, 0.6),
+            new MotorDescription(90, 0.8),
             new MotorDescription(180, 1),
-            new MotorDescription(270, 0.7)
+            new MotorDescription(270, 0.8)
     );
 
     public static List<MotorDescription> QUAD_DIAGONAL = Arrays.asList(

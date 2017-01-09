@@ -47,7 +47,7 @@ public class PathFollower {
             String header = pathReader.readLine();
             String line = pathReader.readLine();
 			if (!header.toLowerCase().equals(
-"id,success,failure,targetx,targety,targetz,steeringgain,accuracyx,accuracyy,accuracyz,basepower,lowestpower,powergain,rampup,rampdown")){
+"id,success,failure,targetx,targety,targeth,steeringgain,accuracyx,accuracyy,accuraccyh,basepower,lowestpower,powergain,rampup,rampdown")){
 				throw new UnsupportedOperationException("Header line in CSV indicates file unparseable, is it of the correct format?");
 			}
             while (line != null) {
@@ -56,13 +56,13 @@ public class PathFollower {
                 newSegment.id = Integer.valueOf(lineSegments[0]);
                 newSegment.success = Integer.valueOf(lineSegments[1]);
                 newSegment.fail = Integer.valueOf(lineSegments[2]);
-                newSegment.navigationTarget = new double[] {
+                newSegment.target = new double[] {
                                 Double.valueOf(lineSegments[3]),
                                 Double.valueOf(lineSegments[4]),
                                 Double.valueOf(lineSegments[5])
                         };
                 newSegment.steeringGain = Double.valueOf(lineSegments[6]);
-                newSegment.accuracyThreshold = new double[] {
+                newSegment.accuracy = new double[] {
                                 Double.valueOf(lineSegments[7]),
                                 Double.valueOf(lineSegments[8]),
                                 Double.valueOf(lineSegments[9])

@@ -6,9 +6,9 @@ public class PathSegment {
     public int success;
     public int fail;
 
-    public double[] navigationTarget;
+    public double[] target;
     public double steeringGain;
-    public double[] accuracyThreshold;
+    public double[] accuracy;
     public double basePower;
     public double lowestPower;
     public double powerGain;

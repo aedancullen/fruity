@@ -12,71 +12,47 @@ package io.github.aedancullen.fruity;
 
 public class Ramper {
 
-    double targetTranslationPower;
-    double targetRotationPower;
+    double targetValue;
 
-    double currentTranslationPower;
-    double currentRotationPower;
+    double currentValue;
 
-    double translationPowerRampRate;
-    double rotationPowerRampRate;
+    double rampUpRate;
+    double rampDownRate;
 
     boolean rampDownEnabled;
 
     long lastRamp = 0;
 
-    public Ramper(double translationPowerRampRate, double rotationPowerRampRate, boolean rampDownEnabled) {
-        this.translationPowerRampRate = translationPowerRampRate;
-        this.rotationPowerRampRate = rotationPowerRampRate;
+    public Ramper(double rampUpRate, double rampDownRate, boolean rampDownEnabled) {
+        this.rampUpRate = rampUpRate;
+        this.rampDownRate = rampDownRate;
         this.rampDownEnabled = rampDownEnabled;
     }
 
-    public void ramp(double translationPower, double rotationPower) {
-        targetTranslationPower = translationPower;
-        targetRotationPower = rotationPower;
+    public void ramp(double value) {
+        targetValue = value;
+
         if (lastRamp == 0) {
             lastRamp = System.currentTimeMillis();
         }
         long elapsed = System.currentTimeMillis() - lastRamp;
         lastRamp = System.currentTimeMillis();
 
-        if (!rampDownEnabled && targetTranslationPower - currentTranslationPower < 0) {
-            currentTranslationPower = targetTranslationPower;
+        if (!rampDownEnabled && targetValue - currentValue < 0) {
+            currentValue = targetValue;
         }
         else {
-            //currentTranslationPower += ((targetTranslationPower - currentTranslationPower) + translationPowerRampRate * elapsed);
-            if (targetTranslationPower < currentTranslationPower) {
-                currentTranslationPower -= translationPowerRampRate * elapsed;
+            if (targetValue < currentValue) {
+                currentValue -= rampDownRate * elapsed;
             }
-            else if (targetTranslationPower > currentTranslationPower) {
-                currentTranslationPower += translationPowerRampRate * elapsed;
-            }
-        }
-
-        if (!rampDownEnabled && Math.abs(targetRotationPower) < Math.abs(currentRotationPower)) {
-            currentRotationPower = targetRotationPower;
-        }
-        else {
-            //currentRotationPower += ((targetRotationPower - currentRotationPower) * rotationPowerRampRate * elapsed);
-            if (targetRotationPower < currentRotationPower) {
-                currentRotationPower -= rotationPowerRampRate * elapsed;
-            }
-            else if (targetRotationPower > currentRotationPower) {
-                currentRotationPower += rotationPowerRampRate * elapsed;
+            else if (targetValue > currentValue) {
+                currentValue += rampUpRate * elapsed;
             }
         }
     }
 
-    public void ramp(double translationPower) {
-        this.ramp(translationPower, 0);
-    }
-
-    public double getTranslationPower() {
-        return currentTranslationPower;
-    }
-
-    public double getRotationPower() {
-        return currentRotationPower;
+    public double getValue() {
+        return currentValue;
     }
 
 }

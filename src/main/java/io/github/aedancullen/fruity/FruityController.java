@@ -92,8 +92,8 @@ public class FruityController {
         telemetry.addData("* Fruity Controller", "Initialized " + motors.size() + " motors. IMU: " + imuStatus);
     }
 
-    public void setupRamper(double translationPowerRampRate, double rotationPowerRampRate, boolean rampDownEnabled) {
-        ramper = new Ramper(translationPowerRampRate, rotationPowerRampRate, rampDownEnabled);
+    public void setupRamper(double rampUpRate, double rampDownRate, boolean rampDownEnabled) {
+        ramper = new Ramper(rampUpRate, rampDownRate, rampDownEnabled);
         usingRamper = true;
     }
 
@@ -242,7 +242,7 @@ public class FruityController {
             drive(heading, translationPower, rotationPower);
         }
         ramper.ramp(translationPower);
-        drive(heading, ramper.getTranslationPower(), rotationPower);
+        drive(heading, ramper.getValue(), rotationPower);
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {

@@ -108,9 +108,35 @@ public class FruityController {
             holdingHeading = new EssentialHeading(0);
         }
 
+        double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
 
         double stickAngle = Math.toDegrees(Math.atan(gamepad.right_stick_x / -gamepad.right_stick_y));
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }
+
+        if (translationPower == 0) {
+            translationPower = 0.4;
+            if (gamepad.y && !gamepad.x && !gamepad.b) {
+                stickAngle = 0;
+            } else if (gamepad.y && gamepad.b) {
+                stickAngle = 45;
+            } else if (gamepad.b && !gamepad.y && !gamepad.a) {
+                stickAngle = 90;
+            } else if (gamepad.b && gamepad.a) {
+                stickAngle = 135;
+            } else if (gamepad.a && !gamepad.b && !gamepad.x) {
+                stickAngle = 180;
+            } else if (gamepad.a && gamepad.x) {
+                stickAngle = -135;
+            } else if (gamepad.x && !gamepad.a && !gamepad.y) {
+                stickAngle = -90;
+            } else if (gamepad.x && gamepad.y) {
+                stickAngle = -45;
+            } else {
+                translationPower = 0;
+            }
+        }
+
+
         if (Double.isNaN(stickAngle)) { // Joystick in center
             if (Double.isNaN(lastStickAngle)) { // last joystick reading does not exist yet
                 stickAngle = 180; // Initialize to straight
@@ -125,38 +151,6 @@ public class FruityController {
         }
         EssentialHeading stickHeading = new EssentialHeading(stickAngle);
         Log.d(TAG, "[GAMEPAD] Stick heading: " + stickHeading.getAngleDegrees());
-        double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
-
-        if (translationPower == 0) {
-            translationPower = 0.4;
-            if (gamepad.y && !gamepad.x && !gamepad.b) {
-                stickHeading = new EssentialHeading(0);
-            }
-            else if (gamepad.y && gamepad.b) {
-                stickHeading = new EssentialHeading(45);
-            }
-            else if (gamepad.b && !gamepad.y && !gamepad.a) {
-                stickHeading = new EssentialHeading(90);
-            }
-            else if (gamepad.b && gamepad.a) {
-                stickHeading = new EssentialHeading(135);
-            }
-            else if (gamepad.a && !gamepad.b && !gamepad.x) {
-                stickHeading = new EssentialHeading(180);
-            }
-            else if (gamepad.a && gamepad.x) {
-                stickHeading = new EssentialHeading(-135);
-            }
-            else if (gamepad.x && !gamepad.a && !gamepad.y) {
-                stickHeading = new EssentialHeading(-90);
-            }
-            else if (gamepad.x && gamepad.y) {
-                stickHeading = new EssentialHeading(-45);
-            }
-            else {
-                translationPower = 0;
-            }
-        }
         Log.d(TAG, "[GAMEPAD] Stick deflection (translation power): " + translationPower);
 
         //Are we angle-snapping?

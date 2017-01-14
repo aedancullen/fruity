@@ -55,6 +55,10 @@ public class Ramper {
         }
     }
 
+    public void ramp(double translationPower) {
+        this.ramp(translationPower, 0);
+    }
+
     public double getTranslationPower() {
         return currentTranslationPower;
     }

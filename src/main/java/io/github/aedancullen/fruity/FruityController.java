@@ -241,8 +241,8 @@ public class FruityController {
         if (!usingRamper) {
             drive(heading, translationPower, rotationPower);
         }
-        ramper.ramp(translationPower, rotationPower);
-        drive(heading, ramper.getTranslationPower(), ramper.getRotationPower());
+        ramper.ramp(translationPower);
+        drive(heading, ramper.getTranslationPower(), rotationPower);
     }
 
     public void drive(EssentialHeading heading, double translationPower, double rotationPower) {

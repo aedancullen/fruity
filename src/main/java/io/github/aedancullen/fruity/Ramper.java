@@ -55,6 +55,7 @@ public class Ramper {
         }
         else {
             if (Math.abs(targetValue) < Math.abs(currentValue)) {
+                previousRampDirection = false;
                 if (targetValue < currentValue) {
                     currentValue -= rampDownRate * elapsed;
                 }
@@ -63,6 +64,7 @@ public class Ramper {
                 }
             }
             else if (Math.abs(targetValue) > Math.abs(currentValue)) {
+                previousRampDirection = true;
                 if (targetValue < currentValue) {
                     currentValue -= rampUpRate * elapsed;
                 }

@@ -21,6 +21,8 @@ public class Ramper {
 
     boolean rampDownEnabled;
 
+    boolean previousRampDirection;
+
     long lastRamp = 0;
 
     public Ramper(double rampUpRate, double rampDownRate, boolean rampDownEnabled) {
@@ -38,15 +40,35 @@ public class Ramper {
         long elapsed = System.currentTimeMillis() - lastRamp;
         lastRamp = System.currentTimeMillis();
 
+
+        if (previousRampDirection == false && Math.abs(currentValue) < Math.abs(targetValue)) {
+            currentValue = targetValue;
+        }
+
+        else if (previousRampDirection == true && Math.abs(currentValue) > Math.abs(targetValue)){
+            currentValue = targetValue;
+        }
+
+
         if (!rampDownEnabled && targetValue - currentValue < 0) {
             currentValue = targetValue;
         }
         else {
-            if (targetValue < currentValue) {
-                currentValue -= rampDownRate * elapsed;
+            if (Math.abs(targetValue) < Math.abs(currentValue)) {
+                if (targetValue < currentValue) {
+                    currentValue -= rampDownRate * elapsed;
+                }
+                else {
+                    currentValue += rampDownRate * elapsed;
+                }
             }
-            else if (targetValue > currentValue) {
-                currentValue += rampUpRate * elapsed;
+            else if (Math.abs(targetValue) > Math.abs(currentValue)) {
+                if (targetValue < currentValue) {
+                    currentValue -= rampUpRate * elapsed;
+                }
+                else {
+                    currentValue += rampUpRate * elapsed;
+                }
             }
         }
     }

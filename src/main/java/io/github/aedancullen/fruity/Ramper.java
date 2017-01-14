@@ -65,7 +65,6 @@ public class Ramper {
                 currentRotationPower += rotationPowerRampRate * elapsed;
             }
         }
-        }
     }
 
     public void ramp(double translationPower) {

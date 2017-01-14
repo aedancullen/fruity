@@ -195,7 +195,7 @@ public class FruityController {
             wasPressedLastTime = true;
         }
         else if (gamepad.left_stick_x != 0) {
-            rotationPower = gamepad.left_stick_x;
+            rotationPower = gamepad.left_stick_x / 4;
             wasPressedLastTime = true;
         }
         else {
@@ -230,7 +230,7 @@ public class FruityController {
             return 0;
         }
         EssentialHeading difference = target.subtract(current);
-        return difference.getAngleDegrees() * gain;
+        return Math.min(Math.max(difference.getAngleDegrees() * gain, -0.25),0.25);
     }
 
     public boolean isFacing(EssentialHeading target) {

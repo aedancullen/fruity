@@ -44,14 +44,27 @@ public class Ramper {
             currentTranslationPower = targetTranslationPower;
         }
         else {
-            currentTranslationPower += ((targetTranslationPower - currentTranslationPower) * translationPowerRampRate * elapsed);
+            //currentTranslationPower += ((targetTranslationPower - currentTranslationPower) + translationPowerRampRate * elapsed);
+            if (targetTranslationPower < currentTranslationPower) {
+                currentTranslationPower -= translationPowerRampRate * elapsed;
+            }
+            else if (targetTranslationPower > currentTranslationPower) {
+                currentTranslationPower += translationPowerRampRate * elapsed;
+            }
         }
 
         if (!rampDownEnabled && Math.abs(targetRotationPower) < Math.abs(currentRotationPower)) {
             currentRotationPower = targetRotationPower;
         }
         else {
-            currentRotationPower += ((targetRotationPower - currentRotationPower) * rotationPowerRampRate * elapsed);
+            //currentRotationPower += ((targetRotationPower - currentRotationPower) * rotationPowerRampRate * elapsed);
+            if (targetRotationPower < currentRotationPower) {
+                currentRotationPower -= rotationPowerRampRate * elapsed;
+            }
+            else if (targetRotationPower > currentRotationPower) {
+                currentRotationPower += rotationPowerRampRate * elapsed;
+            }
+        }
         }
     }
 

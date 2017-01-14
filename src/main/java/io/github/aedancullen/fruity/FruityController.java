@@ -114,7 +114,7 @@ public class FruityController {
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }
 
         if (translationPower == 0) {
-            translationPower = 0.4;
+            translationPower = 0.1;
             if (gamepad.y && !gamepad.x && !gamepad.b) {
                 stickAngle = 0;
             } else if (gamepad.y && gamepad.b) {
@@ -182,11 +182,11 @@ public class FruityController {
         double rotationPower = this.getNecessaryRotationPower((new EssentialHeading(headingStraight.getAngleDegrees() + holdingHeading.getAngleDegrees())), angleSnapGain);
 
         if (gamepad.right_bumper) {
-            rotationPower = 0.4;
+            rotationPower = 0.1;
             wasPressedLastTime = true;
         }
         else if (gamepad.left_bumper) {
-            rotationPower = -0.4;
+            rotationPower = -0.1;
             wasPressedLastTime = true;
         }
         else if (gamepad.left_stick_x != 0) {

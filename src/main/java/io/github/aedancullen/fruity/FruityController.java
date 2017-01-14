@@ -92,8 +92,13 @@ public class FruityController {
         telemetry.addData("* Fruity Controller", "Initialized " + motors.size() + " motors. IMU: " + imuStatus);
     }
 
+    public void setupRamper(double rampUpRate, double rampDownRate, double deadZone, boolean rampDownEnabled) {
+        ramper = new Ramper(rampUpRate, rampDownRate, deadZone, rampDownEnabled);
+        usingRamper = true;
+    }
+
     public void setupRamper(double rampUpRate, double rampDownRate, boolean rampDownEnabled) {
-        ramper = new Ramper(rampUpRate, rampDownRate, rampDownEnabled);
+        ramper = new Ramper(rampUpRate, rampDownRate, 0.05, rampDownEnabled);
         usingRamper = true;
     }
 
@@ -108,7 +113,7 @@ public class FruityController {
             holdingHeading = new EssentialHeading(0);
         }
 
-        double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
+        double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2)) / 2;
 
         double stickAngle = Math.toDegrees(Math.atan(gamepad.right_stick_x / -gamepad.right_stick_y));
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }

@@ -19,16 +19,17 @@ public class Ramper {
     double rampUpRate;
     double rampDownRate;
 
-    boolean rampDownEnabled;
+    double deadZone;
 
-    boolean previousRampDirection;
+    boolean rampDownEnabled;
 
     long lastRamp = 0;
 
-    public Ramper(double rampUpRate, double rampDownRate, boolean rampDownEnabled) {
+    public Ramper(double rampUpRate, double rampDownRate, double deadZone, boolean rampDownEnabled) {
         this.rampUpRate = rampUpRate;
         this.rampDownRate = rampDownRate;
         this.rampDownEnabled = rampDownEnabled;
+        this.deadZone = deadZone;
     }
 
     public void ramp(double value) {
@@ -41,11 +42,7 @@ public class Ramper {
         lastRamp = System.currentTimeMillis();
 
 
-        if (previousRampDirection == false && Math.abs(currentValue) < Math.abs(targetValue)) {
-            currentValue = targetValue;
-        }
-
-        else if (previousRampDirection == true && Math.abs(currentValue) > Math.abs(targetValue)){
+        if (Math.abs(currentValue - targetValue) < deadZone) {
             currentValue = targetValue;
         }
 
@@ -55,7 +52,6 @@ public class Ramper {
         }
         else {
             if (Math.abs(targetValue) < Math.abs(currentValue)) {
-                previousRampDirection = false;
                 if (targetValue < currentValue) {
                     currentValue -= rampDownRate * elapsed;
                 }
@@ -64,7 +60,6 @@ public class Ramper {
                 }
             }
             else if (Math.abs(targetValue) > Math.abs(currentValue)) {
-                previousRampDirection = true;
                 if (targetValue < currentValue) {
                     currentValue -= rampUpRate * elapsed;
                 }

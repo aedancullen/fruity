@@ -101,7 +101,7 @@ public class FruityController {
         usingRamper = false;
     }
 
-    public void handleGamepad(Gamepad gamepad) {
+    public void handleGamepad(Gamepad gamepad, double angleSnapGain) {
         if (gamepad.back) {
             Orientation orientationStraight = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
             headingStraight = EssentialHeading.fromInvertedOrientation(orientationStraight);
@@ -185,7 +185,7 @@ public class FruityController {
             holdingHeading = new EssentialHeading(-45);
         }
 
-        double rotationPower = this.getNecessaryRotationPower((new EssentialHeading(headingStraight.getAngleDegrees() + holdingHeading.getAngleDegrees())), 0.012);
+        double rotationPower = this.getNecessaryRotationPower((new EssentialHeading(headingStraight.getAngleDegrees() + holdingHeading.getAngleDegrees())), angleSnapGain);
 
         if (gamepad.right_bumper) {
             rotationPower = 0.4;

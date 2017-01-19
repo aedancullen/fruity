@@ -47,10 +47,6 @@ public class Ramper {
         }
 
 
-        if (!rampDownEnabled && targetValue - currentValue < 0) {
-            currentValue = targetValue;
-        }
-        else {
             if (Math.abs(targetValue) < Math.abs(currentValue)) {
                 if (targetValue < currentValue) {
                     currentValue -= rampDownRate * elapsed;
@@ -59,7 +55,7 @@ public class Ramper {
                     currentValue += rampDownRate * elapsed;
                 }
             }
-            else if (Math.abs(targetValue) > Math.abs(currentValue) && rampDownEnabled) {
+            else if (Math.abs(targetValue) > Math.abs(currentValue)) {
                 if (targetValue < currentValue) {
                     currentValue -= rampUpRate * elapsed;
                 }
@@ -67,6 +63,9 @@ public class Ramper {
                     currentValue += rampUpRate * elapsed;
                 }
             }
+
+        if (!rampDownEnabled && Math.abs(targetValue) - Math.abs(currentValue) < 0) {
+            currentValue = targetValue;
         }
     }
 

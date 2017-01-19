@@ -119,7 +119,7 @@ public class FruityController {
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }
 
         if (translationPower == 0) {
-            translationPower = 0.45;
+            translationPower = 0.2;
             if (gamepad.y && !gamepad.x && !gamepad.b) {
                 stickAngle = 0;
             } else if (gamepad.y && gamepad.b) {

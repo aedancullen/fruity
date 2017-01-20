@@ -113,13 +113,13 @@ public class FruityController {
             holdingHeading = new EssentialHeading(0);
         }
 
-        double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2)) / 2;
+        double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
 
         double stickAngle = Math.toDegrees(Math.atan(gamepad.right_stick_x / -gamepad.right_stick_y));
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }
 
         if (translationPower == 0) {
-            translationPower = 0.2;
+            translationPower = 0.5;
             if (gamepad.y && !gamepad.x && !gamepad.b) {
                 stickAngle = 0;
             } else if (gamepad.y && gamepad.b) {
@@ -187,15 +187,15 @@ public class FruityController {
         double rotationPower = this.getNecessaryRotationPower((new EssentialHeading(headingStraight.getAngleDegrees() + holdingHeading.getAngleDegrees())), angleSnapGain);
 
         if (gamepad.right_bumper) {
-            rotationPower = 0.1;
+            rotationPower = 0.25;
             wasPressedLastTime = true;
         }
         else if (gamepad.left_bumper) {
-            rotationPower = -0.1;
+            rotationPower = -0.25;
             wasPressedLastTime = true;
         }
         else if (gamepad.left_stick_x != 0) {
-            rotationPower = gamepad.left_stick_x / 4;
+            rotationPower = gamepad.left_stick_x / 2;
             wasPressedLastTime = true;
         }
         else {
@@ -230,7 +230,7 @@ public class FruityController {
             return 0;
         }
         EssentialHeading difference = target.subtract(current);
-        return Math.min(Math.max(difference.getAngleDegrees() * gain, -0.1),0.1);
+        return Math.min(Math.max(difference.getAngleDegrees() * gain, -0.5),0.5);
     }
 
     public boolean isFacing(EssentialHeading target) {

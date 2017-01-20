@@ -230,7 +230,7 @@ public class FruityController {
             return 0;
         }
         EssentialHeading difference = target.subtract(current);
-        return Math.min(Math.max(difference.getAngleDegrees() * gain, -0.25),0.25);
+        return Math.min(Math.max(difference.getAngleDegrees() * gain, -0.1),0.1);
     }
 
     public boolean isFacing(EssentialHeading target) {

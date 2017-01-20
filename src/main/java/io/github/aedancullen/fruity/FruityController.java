@@ -187,11 +187,11 @@ public class FruityController {
         double rotationPower = this.getNecessaryRotationPower((new EssentialHeading(headingStraight.getAngleDegrees() + holdingHeading.getAngleDegrees())), angleSnapGain);
 
         if (gamepad.right_bumper) {
-            rotationPower = 0.25;
+            rotationPower = 0.1;
             wasPressedLastTime = true;
         }
         else if (gamepad.left_bumper) {
-            rotationPower = -0.25;
+            rotationPower = -0.1;
             wasPressedLastTime = true;
         }
         else if (gamepad.left_stick_x != 0) {

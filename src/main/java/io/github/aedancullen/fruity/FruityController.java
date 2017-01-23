@@ -226,7 +226,7 @@ public class FruityController {
     }
 
     public double getNecessaryRotationPower(EssentialHeading target, EssentialHeading current, double gain) {
-        if (Math.abs(current.subtract(target).getAngleDegrees()) < 2) {
+        if (Math.abs(current.subtract(target).getAngleDegrees()) < 1) {
             return 0;
         }
         EssentialHeading difference = target.subtract(current);
@@ -239,7 +239,7 @@ public class FruityController {
         }
         Orientation orientationNow = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         EssentialHeading headingNow = EssentialHeading.fromInvertedOrientation(orientationNow);
-        return Math.abs(headingNow.subtract(target).getAngleDegrees()) < 2;
+        return Math.abs(headingNow.subtract(target).getAngleDegrees()) < 1.5;
     }
 
     public void driveWithRamper(EssentialHeading heading, double translationPower, double rotationPower) {

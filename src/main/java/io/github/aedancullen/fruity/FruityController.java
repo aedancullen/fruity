@@ -245,6 +245,7 @@ public class FruityController {
     public void driveWithRamper(EssentialHeading heading, double translationPower, double rotationPower) {
         if (!usingRamper) {
             drive(heading, translationPower, rotationPower);
+            return;
         }
         ramper.ramp(translationPower);
         drive(heading, ramper.getValue(), rotationPower);

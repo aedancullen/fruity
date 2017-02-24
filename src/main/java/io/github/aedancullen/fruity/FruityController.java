@@ -278,9 +278,9 @@ public class FruityController {
             DcMotor motor = motors.get(i);
             MotorDescription motorDescription = motorConfiguration.get(i);
             Log.d(TAG, "[DRIVEALG-"+i+"] Now processing for motor with heading" + motorDescription.getEssentialHeading().getAngleDegrees());
-            EssentialHeading offset = drivingDirection.subtract(motorDescription.getEssentialHeading());
+            EssentialHeading offset = drivingDirection.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
             Log.d(TAG, "[DRIVEALG-"+i+"] Heading offset: " + offset.getAngleDegrees());
-            double headingInducedPowerScale = -Math.sin(Math.toRadians(offset.getAngleDegrees()));
+            double headingInducedPowerScale = Math.sin(Math.toRadians(offset.getAngleDegrees()));
             double rotationNecessarySpeed = motorDescription.getRotationGain() * rotationPower;
             Log.d(TAG, "[DRIVEALG-"+i+"] Necessary rotation speed: " + rotationNecessarySpeed);
             Log.d(TAG, "[DRIVEALG-"+i+"] Final (uncapped) power: " + ((headingInducedPowerScale * translationPower) + rotationNecessarySpeed));

@@ -278,13 +278,12 @@ public class FruityController {
             DcMotor motor = motors.get(i);
             MotorDescription motorDescription = motorConfiguration.get(i);
             Log.d(TAG, "[DRIVEALG-"+i+"] Now processing for motor with heading" + motorDescription.getEssentialHeading().getAngleDegrees());
-            EssentialHeading offset = drivingDirection.subtract(motorDescription.getEssentialHeading()).regularizeToSemicircle();
+            EssentialHeading offset = drivingDirection.subtract(motorDescription.getEssentialHeading());
             Log.d(TAG, "[DRIVEALG-"+i+"] Heading offset: " + offset.getAngleDegrees());
-            double headingInducedPowerScale = offset.getAngleDegrees() / 90;
-            Log.d(TAG, "[DRIVEALG-"+i+"] Heading-induced power scale: " + headingInducedPowerScale);
+            double headingInducedPowerScale = -Math.sin(Math.toRadians(offset.getAngleDegrees()));
             double rotationNecessarySpeed = motorDescription.getRotationGain() * rotationPower;
             Log.d(TAG, "[DRIVEALG-"+i+"] Necessary rotation speed: " + rotationNecessarySpeed);
-            Log.d(TAG, "[DRIVEALG-"+i+"] Final (uncapped) power: " + ((translationPower * headingInducedPowerScale) + rotationNecessarySpeed));
+            Log.d(TAG, "[DRIVEALG-"+i+"] Final (uncapped) power: " + ((headingInducedPowerScale * translationPower) + rotationNecessarySpeed));
             motor.setPower(Math.max(Math.min((translationPower * headingInducedPowerScale) + rotationNecessarySpeed, 1), -1));
             /*telemetry.addData(
                     "* M" + i + ", H" + motorDescription.getEssentialHeading().getAngleDegrees() + ", G" + motorDescription.getRotationGain(),

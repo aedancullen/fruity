@@ -115,15 +115,15 @@ public class FruityController {
 
         double translationPower = Math.sqrt(Math.pow(gamepad.right_stick_x,2) + Math.pow(gamepad.right_stick_y,2));
         if (gamepad.left_trigger > 0.5) {
-            translationPower *= 0.1;
+            translationPower *= 0.15;
         }
 
         double stickAngle = Math.toDegrees(Math.atan(gamepad.right_stick_x / -gamepad.right_stick_y));
         if (-gamepad.right_stick_y <= 0) { stickAngle = 180 + stickAngle; }
 
         if (translationPower == 0) {
-            if (gamepad.left_trigger > 0.50) {
-                translationPower = 0.1;
+            if (gamepad.left_trigger > 0.5) {
+                translationPower = 0.15;
             }
             else {
                 translationPower = 0.8;
@@ -203,7 +203,12 @@ public class FruityController {
             wasPressedLastTime = true;
         }
         else if (gamepad.left_stick_x != 0) {
-            rotationPower = gamepad.left_stick_x / 2;
+            if (gamepad.left_trigger > 0.5) {
+                rotationPower = gamepad.left_stick_x * 0.15;
+            }
+            else {
+                rotationPower = gamepad.left_stick_x * 0.5;
+            }
             wasPressedLastTime = true;
         }
         else {
